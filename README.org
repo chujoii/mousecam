@@ -1,0 +1,59 @@
+#+OPTIONS: LaTeX:t          Do the right thing automatically (MathJax)
+#+OPTIONS: LaTeX:dvipng     Force using dvipng images
+#+OPTIONS: LaTeX:nil        Do not process LaTeX fragments at all
+#+OPTIONS: LaTeX:verbatim   Verbatim export, for jsMath or so
+#+ATTR_HTML: width="10in"
+
+% org-export-with-LaTeX-fragments
+
+
+
+README.org --- description
+
+
+
+Copyright (C) 2014 Roman V. Prikhodchenko
+
+
+
+Author: Roman V. Prikhodchenko <chujoii@gmail.com>
+
+
+
+  This file is part of mousecam.
+
+  mousecam is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  mousecam is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with mousecam.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+* Keywords:
+mouse camera adns-2051 atmega i2c ocr optical recognition ai artificial intelligence
+
+
+
+* Description:
+  
+
+* Usage:
+use it
+
+
+
+* History:
+Project created at 2014-04(May)-18
+
+
+* Dependences:
+  
+
