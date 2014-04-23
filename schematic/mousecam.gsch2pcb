@@ -1,4 +1,4 @@
-schematics 1-micro-controller.sch
-output-name 1-micro-controller
+schematics 1-micro-controller.sch 2-adns-2051.sch
+output-name mousecam
 elements-dir /home/chujoii/project/geda-helper/footprints-geda
 elements-dir /home/chujoii/project/geda-helper/footprints-my
