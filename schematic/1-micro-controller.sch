@@ -917,7 +917,7 @@ refdes=S101
 T 44500 36800 5 10 0 0 90 0 1
 device=LSH1301xx
 T 44700 36800 5 10 0 0 90 0 1
-footprint=Schurter_LSH1301xx-1
+footprint=TYCO_fsm2j
 }
 C 51600 42200 1 0 1 io-1.sym
 {
@@ -1017,3 +1017,45 @@ value=INPUT
 T 50200 42700 5 10 1 1 0 0 1
 net=VCC_IN5V:1
 }
+C 38100 35900 1 0 0 terminal-1.sym
+{
+T 38410 36650 5 10 0 0 0 0 1
+device=terminal
+T 38410 36500 5 10 0 0 0 0 1
+footprint=M4_plated
+T 38350 35950 5 10 1 1 0 6 1
+refdes=T101
+}
+C 38100 35400 1 0 0 terminal-1.sym
+{
+T 38410 36150 5 10 0 0 0 0 1
+device=terminal
+T 38410 36000 5 10 0 0 0 0 1
+footprint=M4_plated
+T 38350 35450 5 10 1 1 0 6 1
+refdes=T102
+}
+C 38100 34900 1 0 0 terminal-1.sym
+{
+T 38410 35650 5 10 0 0 0 0 1
+device=terminal
+T 38410 35500 5 10 0 0 0 0 1
+footprint=M4_plated
+T 38350 34950 5 10 1 1 0 6 1
+refdes=T103
+}
+C 38100 34400 1 0 0 terminal-1.sym
+{
+T 38410 35150 5 10 0 0 0 0 1
+device=terminal
+T 38410 35000 5 10 0 0 0 0 1
+footprint=M4_plated
+T 38350 34450 5 10 1 1 0 6 1
+refdes=T104
+}
+C 39400 33700 1 0 0 gnd-1.sym
+N 39000 36000 39500 36000 4
+N 39500 36000 39500 34000 4
+N 39000 35500 39500 35500 4
+N 39000 35000 39500 35000 4
+N 39000 34500 39500 34500 4
