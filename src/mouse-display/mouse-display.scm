@@ -1,7 +1,7 @@
 #!/usr/bin/env racket
 #lang racket
 
-
+;(require racket/gui/base)
 
 (require racket/gui/base
          2htdp/image
