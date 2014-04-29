@@ -1,3 +1,5 @@
+// http://www.bidouille.org/hack/mousecam
+
 #define SCLK 2
 #define SDIO 3
 #define PD 4
@@ -79,9 +81,9 @@ void dumpFrame() {
 	Serial.print("FRAME:");
 	for(int i = 0; i < dumpWidth; i++) {
 		byte pix = frame[i];
-		if( pix < 0x10 )
-			Serial.print("0");
-		Serial.print(pix, HEX);
+		if( pix < 0x10 ) {pix = 0x10;} // fixme ?
+		//Serial.print(pix, HEX);
+		Serial.write(pix);
 	}
 	Serial.println();
 }
