@@ -1,4 +1,3 @@
-#!/usr/bin/env racket
 #lang racket/load
 
 ;;;; mousedisplay.scm ---  program for display image from optical mouse sensor (camera) 
@@ -77,12 +76,12 @@
   ;;(display (read-char tty))
   ;;(let ((qq (read-line tty)))
   (let ((qq (read-bytes-line tty)))
-    (when (= (string-length qq) 256)
-      (simple-display-large-img 4 16 qq))
-    (display "len=")(display (string-length qq))(newline)
-    (display qq)(newline))
+    (when (= (bytes-length qq) 257) ;; fixme
+	(simple-display-large-img 16 16 qq )))
+	;(begin (display "len=")(display (bytes-length qq))(newline)(display qq)(newline))))
   
-  (when (< counter 10)
+  (sleep 0.1)
+  (when (< counter 1000)
     (read-loop (+ counter 1))))
 
 

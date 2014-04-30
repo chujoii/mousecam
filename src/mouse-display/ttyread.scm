@@ -1,6 +1,3 @@
-#lang racket
-
-
 
 ;;;; ttyread.scm ---  library for read img from microcontroller
 

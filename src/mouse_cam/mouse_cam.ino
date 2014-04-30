@@ -78,14 +78,35 @@ void dumpFrame() {
 	config &= B11110111;
 	writeRegister(REG_CONFIG_BITS, config);
 
-	Serial.print("FRAME:");
+	word min = 256;
+	word avg = 0;
+	word max = 0;
+	
+	Serial.println("FRAME:");
 	for(int i = 0; i < dumpWidth; i++) {
 		byte pix = frame[i];
-		if( pix < 0x10 ) {pix = 0x10;} // fixme ?
+		avg += pix; if (pix<min) {min = pix;} if (pix>max) { max = pix;}
+		//if( pix < 0x10 ) {pix = 0x10;} // fixme ?
 		//Serial.print(pix, HEX);
 		Serial.write(pix);
 	}
 	Serial.println();
+	
+	/*
+	Serial.println("FRAME-hex:");
+	for(int i = 0; i < dumpWidth; i++) {
+		byte pix = frame[i];
+		avg += pix; if (pix<min) {min = pix;} if (pix>max) { max = pix;}
+		if( pix < 0x10 )
+			Serial.print("0");
+		Serial.print(pix, HEX);
+		if (i%16 == 0) {Serial.println();}
+	}
+	Serial.println();
+	*/
+	Serial.print("MIN:");	Serial.println(min);
+	Serial.print("AVG:");	Serial.println(avg/dumpWidth);
+	Serial.print("MAX:");	Serial.println(max);
 }
 
 void reset() {

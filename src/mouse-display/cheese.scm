@@ -1,5 +1,3 @@
-#lang racket
-
 
 ;;;; cheese.scm ---  library for display img
 
@@ -93,18 +91,23 @@
     (when (> (length lst-img) 0)
       (begin
 	;; draw rectangle
-	(let ((pixel-color (/ (car lst-img) 256.0))) ;; 1 byte = 256;    color from 0.0 to 1.0
-	  ((draw-solid-rectangle w)
+	(let ((pixel-color (/ (car lst-img) 25.60))) ;; 1 byte = 256;    color from 0.0 to 1.0
+	  ((draw-solid-rectangle w) ;; draw
 	   (make-posn (* pixel-size row) (* pixel-size col))
 	   pixel-size
 	   pixel-size
 	   (make-rgb pixel-color pixel-color pixel-color)))
+
+	;(display (car lst-img)) (display " ") (when (>= (+ row 1) img-size) (newline))
+
 	(simage (cdr lst-img)
 		(if (>= (+ row 1) img-size) 0 (+ row 1))
 		(if (>= (+ row 1) img-size) (+ col 1) col)))))
 
 
   ;(simage img 0 0))
+  
+  ((clear-viewport w)) ;; clear
   (simage (bytes->list img) 0 0))
 ;unit test:
 ;(simple-display-large-img 16 4 (list     10 20 30 100     100 140 150 250     10 20 30 100     10 0 30 100))
