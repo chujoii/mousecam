@@ -1,60 +1,120 @@
 #!/usr/bin/env racket
-#lang racket
+#lang racket/load
 
-;(require racket/gui/base)
-
-(require racket/gui/base
-         2htdp/image
-         (only-in mrlib/image-core render-image))
-
-;; The state of our program is a number.
-(define state 0)
-
-;; On a timer tick, increment the state, and refresh the canvas.
-;; tick!: -> void
-(define (tick!)
-  (set! state (add1 state))
-  (send THE-CANVAS refresh))
+;;;; mousedisplay.scm ---  program for display image from optical mouse sensor (camera) 
 
 
-;; When a canvas paints itself, use the following:
-;; paint: canvas% dc<%> -> void
-(define (paint! a-canvas my-drawing-context)
-  (define my-new-scene (text (format "I see: ~a" state) 20 'black))
-  ;; Note: we force the canvas to be of a particular width and height here:
-  (send a-canvas min-client-width (image-width my-new-scene))
-  (send a-canvas min-client-height (image-height my-new-scene))
-  (render-image my-new-scene my-drawing-context 0 0))
+;;; Copyright (C) 2014 Roman V. Prikhodchenko
 
 
-;; Here, we initialize our graphical application.  We create a window frame...
-;; THE-FRAME: frame%
-(define THE-FRAME (new (class frame%
-                         (super-new)
-                         ;; When we close the frame, shut down everything.
-                         (define/augment (on-close)
-                           (custodian-shutdown-all (current-custodian))))
-                       [label "Example"]))
+
+;;; Author: Roman V. Prikhodchenko <chujoii@gmail.com>
 
 
-;; and add a canvas into it.
-;; THE-CANVAS: canvas%
-(define THE-CANVAS (new (class canvas%
-                          (super-new)
 
-                          ;; We define a key handler.  Let's have it so it
-                          ;; resets the counter on a key press
-                          (define/override (on-char key-event)
-                            (when (eq? (send key-event get-key-code) 'release)
-                              (set! state 0)
-                              (send THE-CANVAS refresh))))
-                        [parent THE-FRAME]
-                        [paint-callback paint!]))
+;;;    This file is part of mousecam.
+;;;
+;;;    mousecam is free software: you can redistribute it and/or modify
+;;;    it under the terms of the GNU General Public License as published by
+;;;    the Free Software Foundation, either version 3 of the License, or
+;;;    (at your option) any later version.
+;;;
+;;;    mousecam is distributed in the hope that it will be useful,
+;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;    GNU General Public License for more details.
+;;;
+;;;    You should have received a copy of the GNU General Public License
+;;;    along with mousecam.  If not, see <http://www.gnu.org/licenses/>.
 
-;; We get the frame to show on screen:
-(send THE-FRAME show #t)
 
-;; Finally, we set up a timer that will call tick! on every second.
-(define THE-TIMER (new timer% 
-                       [notify-callback tick!]
-                       [interval 1000]))
+
+;;; Keywords: mouse camera cam
+
+
+
+;;; Usage:
+
+;; ./mousedisplay.scm
+
+;;; History:
+
+;;; Code:
+
+
+
+;(require racket/draw)
+(require graphics/graphics)
+
+(require readline)
+(require readline/rep-start)
+
+;; for config tty
+(require racket/system)
+
+
+(define *device-path* "/dev/ttyUSB0")
+(define *device-speed* "115200")
+
+
+
+(define tty null)
+(define w null)
+
+
+
+;(load "cheese.scm")
+(load "ttyread.scm")
+
+
+
+
+
+(define (read-loop counter)
+  (display "counter=")(display counter)(newline)
+
+  ;(display (bytes->string/utf-8 (read-byte tty)))
+  ;;(display (read-char tty))
+  ;;(let ((qq (read-line tty)))
+  (let ((qq (read-bytes-line tty)))
+    (when (= (string-length qq) 256)
+      (simple-display-large-img 4 16 qq))
+    (display "len=")(display (string-length qq))(newline)
+    (display qq)(newline))
+  
+  (when (< counter 10)
+    (read-loop (+ counter 1))))
+
+
+
+
+
+
+(serial-initialize *device-path* *device-speed*)
+
+
+(open-graphics)
+; nothing appears to happen, but the library is initialized...
+ 
+(set! w (open-viewport "mousecam" 300 300))
+; viewport window appears
+ 
+
+
+(read-loop 0)
+
+
+
+
+;(sleep 10)
+ 
+(close-viewport w)
+; viewport disappears
+ 
+(close-graphics)
+; again, nothing appears to happen, but
+; unclosed viewports (if any) would disappear
+
+
+
+(serial-close-connection)
