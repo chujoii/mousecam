@@ -70,18 +70,21 @@
 
 
 (define (read-loop counter)
-  (display "counter=")(display counter)(newline)
+  ;(display "counter=")(display counter)(newline)
 
   ;(display (bytes->string/utf-8 (read-byte tty)))
   ;;(display (read-char tty))
   ;;(let ((qq (read-line tty)))
-  (let ((qq (read-bytes-line tty)))
-    (when (= (bytes-length qq) 257) ;; fixme
-	(simple-display-large-img 16 16 qq )))
-	;(begin (display "len=")(display (bytes-length qq))(newline)(display qq)(newline))))
-  
-  (sleep 0.1)
-  (when (< counter 1000)
+  (let ((qq (read-line tty)))
+    (display qq)(newline)
+    (when (and (> (string-length qq) 5) (string=? (substring qq 0 5) "FRAME"))
+      (simple-display-large-img 16 16 (read-bytes 256 tty) ))
+    
+    ;(display "len=")(display (string-length qq))(newline)(display qq)(newline)
+    )
+
+  ;(sleep 0.1)
+  (when (< counter 100000)
     (read-loop (+ counter 1))))
 
 
