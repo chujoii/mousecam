@@ -63,7 +63,7 @@
 
 
 
-;(load "cheese.scm")
+(load "cheese.scm")
 (load "ttyread.scm")
 
 
