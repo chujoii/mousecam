@@ -87,11 +87,11 @@
 
 
 (define (simple-display-large-img pixel-size img-size img)
-  (define (simage lst-img row col)
+  (define (simage lst-img row col max-bright)
     (when (> (length lst-img) 0)
       (begin
 	;; draw rectangle
-	(let ((pixel-color (/ (car lst-img) 256.0))) ;; 1 byte = 256;    color from 0.0 to 1.0
+	(let ((pixel-color (/ (car lst-img) max-bright))) ;; 1 byte = 256;    color from 0.0 to 1.0
 	  ((draw-solid-rectangle w) ;; draw
 	   (make-posn (* pixel-size col) (* pixel-size row))
 	   pixel-size
@@ -102,13 +102,15 @@
 
 	(simage (cdr lst-img)
 		(if (>= (+ row 1) img-size) 0 (+ row 1))
-		(if (>= (+ row 1) img-size) (+ col 1) col)))))
+		(if (>= (+ row 1) img-size) (+ col 1) col)
+		max-bright))))
 
 
   ;(simage img 0 0))
   
   ;((clear-viewport w)) ;; clear
-  (simage (bytes->list img) 0 0))
+  
+  (simage img 0 0 (+ 0.0 (apply max img))))
 ;unit test:
 ;(simple-display-large-img 16 4 (list     10 20 30 100     100 140 150 250     10 20 30 100     10 0 30 100))
 

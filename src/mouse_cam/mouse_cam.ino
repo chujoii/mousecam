@@ -1,4 +1,45 @@
-// http://www.bidouille.org/hack/mousecam
+/*
+  mouse_cam_lib.ino --- capture image from mouse camera ADNS2051
+
+  Copyright (C) 2014 Roman V. Prikhodchenko
+
+
+
+  Original author: http://www.bidouille.org/hack/mousecam <contact@bidouille.org>
+  Author: Roman V. Prikhodchenko <chujoii@gmail.com>
+
+
+  This file is part of mousecam.
+
+    mousecam is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    mousecam is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with mousecam.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+ Keywords: mouse cam
+
+
+
+ Usage:
+
+
+ History:
+ 
+
+
+ Code:
+*/
+
 
 #define SCLK 2
 #define SDIO 3
@@ -23,10 +64,10 @@
 int dumpWidth = 256; // Number of pixels to read for each frame.
 byte frame[256];
 
-void setup() {
-	delay(1000);
-	Serial.begin(115200);
+int imgWidth = 16; // Number of pixels in row and column
+byte img[16][16];
 
+void mouse_cam_init() {
 	reset();
 	byte productId = readRegister(REG_PRODUCT_ID);
 	byte revisionId = readRegister(REG_REVISION_ID);
@@ -41,23 +82,15 @@ void setup() {
 	writeRegister(REG_CONFIG_BITS, config);
 }
 
-void loop() {
-	// Allows to set the dump window by sending the number of lines to read via the serial port.
-	if(Serial.available() > 0) {
-		dumpWidth = 16 * Serial.read();
-		dumpWidth = constrain(dumpWidth, 0, 256);
-	}
 
+char get_dx(){
 	readRegister(REG_MOTION); // Freezes DX and DY until they are read or MOTION is read again.
-	char dx = readRegister(REG_DELTA_X);
-	char dy = readRegister(REG_DELTA_Y);
-	Serial.print("DELTA:");
-	Serial.print(dx, DEC);
-	Serial.print(" ");
-	Serial.println(dy, DEC);
+	return readRegister(REG_DELTA_X);
+}
 
-	if( dumpWidth > 0 )
-		dumpFrame();
+char get_dy(){
+	readRegister(REG_MOTION); // Freezes DX and DY until they are read or MOTION is read again.
+	char dy = readRegister(REG_DELTA_Y);
 }
 
 void dumpFrame() {
@@ -108,6 +141,31 @@ void dumpFrame() {
 	Serial.print("AVG:");	Serial.println(avg/dumpWidth);
 	Serial.print("MAX:");	Serial.println(max);
 }
+
+
+void get_img() {
+	byte config = readRegister(REG_CONFIG_BITS);
+	config |= B00001000; // PixDump
+	writeRegister(REG_CONFIG_BITS, config);
+
+	int x = 0;
+	int y = 0;
+	for (x=0; x<imgWidth; x++){
+		for (y=0; y<imgWidth; y++){
+			byte data = readRegister(REG_DATA_OUT_LOWER);
+			if( (data & 0x80) == 0 ) { // Data is valid
+				img[x][y] = data;
+			}
+		}
+	}
+	while (count != dumpWidth);
+
+	config = readRegister(REG_CONFIG_BITS);
+	config &= B11110111;
+	writeRegister(REG_CONFIG_BITS, config);
+}
+
+
 
 void reset() {
 	pinMode(SCLK, OUTPUT);

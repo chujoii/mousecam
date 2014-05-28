@@ -78,7 +78,8 @@
   (let ((qq (read-line tty)))
     (display qq)(newline)
     (when (and (> (string-length qq) 5) (string=? (substring qq 0 5) "FRAME"))
-      (simple-display-large-img 16 16 (read-bytes 256 tty) ))
+      (begin ;(read-bytes 1 tty)
+	     (simple-display-large-img 32 16 (bytes->list (read-bytes 256 tty)) )))
     
     ;(display "len=")(display (string-length qq))(newline)(display qq)(newline)
     )
@@ -98,7 +99,7 @@
 (open-graphics)
 ; nothing appears to happen, but the library is initialized...
  
-(set! w (open-viewport "mousecam" 300 300))
+(set! w (open-viewport "mousecam" 512 512))
 ; viewport window appears
  
 
