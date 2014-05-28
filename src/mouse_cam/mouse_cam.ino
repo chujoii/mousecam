@@ -61,11 +61,16 @@
 #define REG_FRAME_PERIOD_LOWER 0x10
 #define REG_FRAME_PERIOD_UPPER 0x11
 
-int dumpWidth = 256; // Number of pixels to read for each frame.
-byte frame[256];
+// Number of pixels to read for each frame.
+#define dumpWidth 256
 
-int imgWidth = 16; // Number of pixels in row and column
-byte img[16][16];
+
+
+byte frame[dumpWidth];
+
+//byte img[imgWidth][imgWidth];
+
+//byte bwimg[imgWidth][imgWidth];
 
 void mouse_cam_init() {
 	reset();
@@ -90,38 +95,25 @@ char get_dx(){
 
 char get_dy(){
 	readRegister(REG_MOTION); // Freezes DX and DY until they are read or MOTION is read again.
-	char dy = readRegister(REG_DELTA_Y);
+	return readRegister(REG_DELTA_Y);
 }
 
-void dumpFrame() {
-	byte config = readRegister(REG_CONFIG_BITS);
-	config |= B00001000; // PixDump
-	writeRegister(REG_CONFIG_BITS, config);
-
-	int count = 0;
-	do {
-		byte data = readRegister(REG_DATA_OUT_LOWER);
-		if( (data & 0x80) == 0 ) { // Data is valid
-			frame[count++] = data;
-		}
-	} 
-	while (count != dumpWidth);
-
-	config = readRegister(REG_CONFIG_BITS);
-	config &= B11110111;
-	writeRegister(REG_CONFIG_BITS, config);
+void SerialPrintImg(byte imgarray[][16]) { // imgWidth == 16
 
 	word min = 256;
 	word avg = 0;
 	word max = 0;
 	
 	Serial.println("FRAME:");
-	for(int i = 0; i < dumpWidth; i++) {
-		byte pix = frame[i];
-		avg += pix; if (pix<min) {min = pix;} if (pix>max) { max = pix;}
-		//if( pix < 0x10 ) {pix = 0x10;} // fixme ?
-		//Serial.print(pix, HEX);
-		Serial.write(pix);
+	for(int i = 0; i < imgWidth; i++) {
+		for(int j = 0; j < imgWidth; j++) {
+			
+			byte pix = imgarray[i][j];
+			avg += pix; if (pix<min) {min = pix;} if (pix>max) { max = pix;}
+			//if( pix < 0x10 ) {pix = 0x10;} // fixme ?
+			//Serial.print(pix, HEX);
+			Serial.write(pix);
+		}
 	}
 	Serial.println();
 	
@@ -158,7 +150,6 @@ void get_img() {
 			}
 		}
 	}
-	while (count != dumpWidth);
 
 	config = readRegister(REG_CONFIG_BITS);
 	config &= B11110111;
