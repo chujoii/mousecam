@@ -103,10 +103,13 @@ void SerialPrintImg(byte imgarray[][16]) { // imgWidth == 16
 	word min = 256;
 	word avg = 0;
 	word max = 0;
+
+	int counterprint = 0;
 	
 	Serial.println("FRAME:");
 	for(int i = 0; i < imgWidth; i++) {
 		for(int j = 0; j < imgWidth; j++) {
+			counterprint++;
 			
 			byte pix = imgarray[i][j];
 			avg += pix; if (pix<min) {min = pix;} if (pix>max) { max = pix;}
@@ -117,6 +120,7 @@ void SerialPrintImg(byte imgarray[][16]) { // imgWidth == 16
 	}
 	Serial.println();
 	
+	//Serial.print("counterprint=");Serial.println(counterprint);
 	/*
 	Serial.println("FRAME-hex:");
 	for(int i = 0; i < dumpWidth; i++) {
@@ -142,14 +146,23 @@ void get_img() {
 
 	int x = 0;
 	int y = 0;
+
+	int counterall = 0;
+	int countergood = 0;
+
+	byte data;
+	
 	for (x=0; x<imgWidth; x++){
 		for (y=0; y<imgWidth; y++){
-			byte data = readRegister(REG_DATA_OUT_LOWER);
-			if( (data & 0x80) == 0 ) { // Data is valid
-				img[x][y] = data;
-			}
+			countergood++;
+			do {
+				data = readRegister(REG_DATA_OUT_LOWER);
+				counterall++;
+			} while ((data & 0x80) != 0 ); // Data is valid
+			img[x][y] = data;
 		}
 	}
+	//Serial.print("countergood=");Serial.print(countergood);	Serial.print("   counterall=");Serial.println(counterall);
 
 	config = readRegister(REG_CONFIG_BITS);
 	config &= B11110111;
