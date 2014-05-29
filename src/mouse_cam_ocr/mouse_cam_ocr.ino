@@ -142,11 +142,53 @@ int wave(byte imgarray[][16], int startx, int starty){
 
 		counter++;
 		
-		Serial.print("counter=");Serial.println(counter);
+		//Serial.print("counter=");Serial.println(counter);
 
 	} while ((counter < maxcounter) && (counter_changes>0));
 
-	if (counter >= maxcounter) {Serial.println("exit because: counter > maxcounter");}
-	if (counter_changes <= 0) {Serial.println("exit because: counter_changes == 0");}
+	//if (counter >= maxcounter) {Serial.println("exit because: counter > maxcounter");}
+	//if (counter_changes <= 0) {Serial.println("exit because: counter_changes == 0");}
 	return counter;
+}
+
+
+
+int simple_line_finder(byte imgarray[][16], int startx, int starty, int j){
+	int i;
+	// j = imgWidth-1; // bottom of img = top of robot 
+	int line_start = -1;
+	int line_end = -1;
+	
+	boolean stop = true;
+	
+
+	i=0;
+	do{
+		//Serial.print("[");Serial.print(i);Serial.print("]");Serial.println(imgarray[i][j]);
+		if (imgarray[i][j]>2 && line_start<0) {
+			line_start = i;
+			stop=false;
+		}
+		i++;
+	} while(i<imgWidth && stop);
+
+
+
+
+
+	stop = true;
+	i=imgWidth-1;
+	do{
+		//Serial.print("[");Serial.print(i);Serial.print("]");Serial.println(imgarray[i][j]);
+		if (imgarray[i][j]>2 && line_end<0) {
+			line_end = i;
+			stop=false;
+		}
+		i--;
+	} while(i>0 && stop);
+
+	
+	//Serial.print("from");Serial.print(line_start);Serial.print("   to");Serial.println(line_end);
+	
+	return (line_end-line_start)/2;
 }
