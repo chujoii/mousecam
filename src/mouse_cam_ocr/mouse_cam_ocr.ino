@@ -88,7 +88,7 @@ int inc_neighbours(byte imgarray[][16], int x, int y)
 
 	for (i=x-1; i<=x+1; i++){
 		for (j=y-1; j<=y+1; j++){
-			if ( !(i==x && j==y) && 1==imgarray[i][j] && i>=0 && i<=imgWidth && j>=0 && j<=imgWidth) {
+			if ( !(i==x && j==y) && 1==imgarray[i][j] && i>=0 && i<imgWidth && j>=0 && j<imgWidth) {
 				
 				imgarray[i][j] = update;
 				update_counter++;
@@ -127,16 +127,18 @@ int wave(byte imgarray[][16], int startx, int starty){
 		if (jmin<0) {jmin = 0;}
 		if (jmin>imgWidth) {jmin = imgWidth;}
 		
-		for (i=imin; i<imax; i++){
-			for (j=jmin; j<jmax; j++){
+		//for (i=imin; i<imax; i++){
+		//	for (j=jmin; j<jmax; j++){
+		for (i=0; i<imgWidth; i++){
+			for (j=0; j<imgWidth; j++){
+				
 				if (imgarray[i][j] == counter){
+					
 					counter_changes += inc_neighbours(imgarray, i, j);
 				}
 			}
 		}
 
-		Serial.print("img[");Serial.print(i);Serial.print("][");Serial.print(j);Serial.print("]=");Serial.println(imgarray[i][j]);
-		SerialPrintImg(bwimg);
 
 		counter++;
 		
